@@ -20,5 +20,17 @@ func parse(input string) []int {
 }
 
 func captcha(input []int) int {
-	return 0
+	acc := 0
+
+	for i := 0; i < len(input)-1; i++ {
+		if input[i] == input[i+1] {
+			acc = acc + input[i]
+		}
+	}
+
+	if input[len(input)-1] == input[0] {
+		acc = acc + input[0]
+	}
+
+	return acc
 }
