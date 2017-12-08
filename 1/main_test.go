@@ -11,6 +11,11 @@ func TestCaptchaParse(t *testing.T) {
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Parse failed.\n%v\n%v", expected, result)
 	}
+
+	result = parse("11223344567\n")
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Parse failed on newline.\n%v\n%v", expected, result)
+	}
 }
 
 func TestKnownCaptchas(t *testing.T) {
