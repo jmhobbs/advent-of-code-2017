@@ -39,3 +39,7 @@ func parse(input io.Reader) Spreadsheet {
 func checksum(s Spreadsheet) int {
 	return 0
 }
+
+func checksumRow(r Row) int {
+	return 0
+}
