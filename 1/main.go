@@ -42,3 +42,7 @@ func captcha(input []int) int {
 
 	return acc
 }
+
+func halfwayCaptcha(input []int) int {
+	return 0
+}

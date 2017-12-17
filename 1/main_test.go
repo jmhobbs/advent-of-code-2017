@@ -44,3 +44,35 @@ func TestKnownCaptchas(t *testing.T) {
 		t.Errorf("CAPTCHA Failed. Expected 9, got %d", result)
 	}
 }
+
+func TestKnownHalfwayCaptchas(t *testing.T) {
+	// 1212 produces 6: the list contains 4 items, and all four digits match the digit 2 items ahead.
+	result := halfwayCaptcha([]int{1, 2, 1, 2})
+	if 6 != result {
+		t.Errorf("CAPTCHA Failed. Expected 6, got %d", result)
+	}
+
+	// 1221 produces 0, because every comparison is between a 1 and a 2.
+	result = halfwayCaptcha([]int{1, 2, 2, 1})
+	if 0 != result {
+		t.Errorf("CAPTCHA Failed. Expected 0, got %d", result)
+	}
+
+	// 123425 produces 4, because both 2s match each other, but no other digit has a match.
+	result = halfwayCaptcha([]int{1, 2, 3, 4, 2, 5})
+	if 4 != result {
+		t.Errorf("CAPTCHA Failed. Expected 4, got %d", result)
+	}
+
+	// 123123 produces 12.
+	result = halfwayCaptcha([]int{1, 2, 3, 1, 2, 3})
+	if 12 != result {
+		t.Errorf("CAPTCHA Failed. Expected 12, got %d", result)
+	}
+
+	// 12131415 produces 4.
+	result = halfwayCaptcha([]int{1, 2, 1, 3, 1, 4, 1, 5})
+	if 4 != result {
+		t.Errorf("CAPTCHA Failed. Expected 4, got %d", result)
+	}
+}
