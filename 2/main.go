@@ -4,11 +4,21 @@ import (
 	"bufio"
 	"io"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 )
 
 func main() {
+	file, err := os.Open("input")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	s := parse(file)
+
+	log.Println("Checksum A", checksum(s))
 }
 
 type Row []int
@@ -37,9 +47,23 @@ func parse(input io.Reader) Spreadsheet {
 }
 
 func checksum(s Spreadsheet) int {
-	return 0
+	acc := 0
+	for _, row := range s {
+		acc = acc + checksumRow(row)
+	}
+	return acc
 }
 
 func checksumRow(r Row) int {
-	return 0
+	min := r[0]
+	max := r[0]
+	for _, i := range r {
+		if min > i {
+			min = i
+		}
+		if max < i {
+			max = i
+		}
+	}
+	return max - min
 }
