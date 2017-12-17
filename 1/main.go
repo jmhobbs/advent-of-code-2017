@@ -1,11 +1,19 @@
 package main
 
 import (
+	"io/ioutil"
+	"log"
 	"strconv"
 	"strings"
 )
 
 func main() {
+	input, err := ioutil.ReadFile("input")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println(captcha(parse(string(input))))
 }
 
 func parse(input string) []int {
