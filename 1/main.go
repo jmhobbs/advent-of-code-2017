@@ -13,7 +13,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println(captcha(parse(string(input))))
+	numbers := parse(string(input))
+
+	log.Println("Part A", captcha(numbers))
+	log.Println("Part B", halfwayCaptcha(numbers))
 }
 
 func parse(input string) []int {
@@ -44,5 +47,15 @@ func captcha(input []int) int {
 }
 
 func halfwayCaptcha(input []int) int {
-	return 0
+	acc := 0
+	length := len(input)
+
+	for i := 0; i < length; i++ {
+		j := (i + length/2) % length
+		if input[i] == input[j] {
+			acc = acc + input[i]
+		}
+	}
+
+	return acc
 }
