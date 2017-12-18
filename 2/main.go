@@ -67,3 +67,15 @@ func checksumRow(r Row) int {
 	}
 	return max - min
 }
+
+func evenChecksum(s Spreadsheet) int {
+	acc := 0
+	for _, row := range s {
+		acc = acc + evenRowChecksum(row)
+	}
+	return acc
+}
+
+func evenRowChecksum(r Row) int {
+	return 0
+}
