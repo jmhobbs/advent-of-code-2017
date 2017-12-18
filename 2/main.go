@@ -19,6 +19,7 @@ func main() {
 	s := parse(file)
 
 	log.Println("Checksum A", checksum(s))
+	log.Println("Checksum B", evenChecksum(s))
 }
 
 type Row []int
@@ -77,5 +78,17 @@ func evenChecksum(s Spreadsheet) int {
 }
 
 func evenRowChecksum(r Row) int {
+	for i, a := range r {
+		for j, b := range r {
+			if i == j {
+				continue
+			}
+			if a%b == 0 {
+				return a / b
+			} else if b%a == 0 {
+				return b / a
+			}
+		}
+	}
 	return 0
 }
