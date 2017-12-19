@@ -87,3 +87,7 @@ func getSpiralLocation(src int) (x, y int) {
 
 	return
 }
+
+func getSpiralValue(src int) int {
+	return 0
+}
