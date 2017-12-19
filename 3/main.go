@@ -1,6 +1,9 @@
 package main
 
+import "log"
+
 func main() {
+	log.Println("Part A:", countSteps(265149))
 }
 
 const (
@@ -11,7 +14,22 @@ const (
 )
 
 func countSteps(src int) int {
-	return 0
+	x, y := getSpiralLocation(src)
+
+	total := 0
+	if x < 0 {
+		total = total + -1*x
+	} else {
+		total = total + x
+	}
+
+	if y < 0 {
+		total = total + -1*y
+	} else {
+		total = total + y
+	}
+
+	return total
 }
 
 func getSpiralLocation(src int) (x, y int) {
