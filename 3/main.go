@@ -1,9 +1,18 @@
 package main
 
-import "log"
+import (
+	"log"
+)
 
 func main() {
 	log.Println("Part A:", countSteps(265149))
+	for i := 2; true; i++ {
+		v := getSpiralValue(i)
+		if v > 265149 {
+			log.Println("Part B:", v)
+			break
+		}
+	}
 }
 
 const (
@@ -13,8 +22,16 @@ const (
 	DOWN
 )
 
+type spiralCallback interface {
+	callback(int, int, int)
+}
+
+type noopSpiralCallback struct{}
+
+func (nsc *noopSpiralCallback) callback(int, int, int) {}
+
 func countSteps(src int) int {
-	x, y := getSpiralLocation(src)
+	x, y := getSpiralLocation(src, &noopSpiralCallback{})
 
 	total := 0
 	if x < 0 {
@@ -32,7 +49,7 @@ func countSteps(src int) int {
 	return total
 }
 
-func getSpiralLocation(src int) (x, y int) {
+func getSpiralLocation(src int, cb spiralCallback) (x, y int) {
 	x = -1
 	y = 0
 	w := 0
@@ -49,6 +66,7 @@ func getSpiralLocation(src int) (x, y int) {
 				direction = UP
 			} else {
 				x = x + 1
+				cb.callback(i, x, y)
 				continue
 			}
 		}
@@ -58,6 +76,7 @@ func getSpiralLocation(src int) (x, y int) {
 				direction = LEFT
 			} else {
 				y = y + 1
+				cb.callback(i, x, y)
 				continue
 			}
 		}
@@ -67,6 +86,7 @@ func getSpiralLocation(src int) (x, y int) {
 				direction = DOWN
 			} else {
 				x = x - 1
+				cb.callback(i, x, y)
 				continue
 			}
 		}
@@ -76,12 +96,14 @@ func getSpiralLocation(src int) (x, y int) {
 				direction = RIGHT
 			} else {
 				y = y - 1
+				cb.callback(i, x, y)
 				continue
 			}
 		}
 
 		if direction == RIGHT {
 			x = x + 1
+			cb.callback(i, x, y)
 		}
 	}
 
@@ -89,5 +111,42 @@ func getSpiralLocation(src int) (x, y int) {
 }
 
 func getSpiralValue(src int) int {
-	return 0
+	sva := NewSpiralValueAccumulator()
+	x, y := getSpiralLocation(src, &sva)
+	return sva.Values[Coordinates{x, y}]
+}
+
+type Coordinates struct {
+	X int
+	Y int
+}
+
+type spiralValueAccumulator struct {
+	Values map[Coordinates]int
+}
+
+func NewSpiralValueAccumulator() spiralValueAccumulator {
+	sva := spiralValueAccumulator{make(map[Coordinates]int)}
+	// special case
+	sva.Values[Coordinates{0, 0}] = 1
+	return sva
+}
+
+func (sva *spiralValueAccumulator) callback(i, x, y int) {
+	// special case
+	if i == 1 {
+		return
+	}
+
+	total := 0
+	total += sva.Values[Coordinates{x + 1, y}]
+	total += sva.Values[Coordinates{x + 1, y + 1}]
+	total += sva.Values[Coordinates{x, y + 1}]
+	total += sva.Values[Coordinates{x - 1, y + 1}]
+	total += sva.Values[Coordinates{x - 1, y}]
+	total += sva.Values[Coordinates{x - 1, y - 1}]
+	total += sva.Values[Coordinates{x, y - 1}]
+	total += sva.Values[Coordinates{x + 1, y - 1}]
+
+	sva.Values[Coordinates{x, y}] = total
 }

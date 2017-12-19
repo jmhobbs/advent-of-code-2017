@@ -51,7 +51,7 @@ func TestSpiralLocation(t *testing.T) {
 	}
 
 	for _, expect := range expected {
-		x, y := getSpiralLocation(expect[0])
+		x, y := getSpiralLocation(expect[0], &noopSpiralCallback{})
 		if x != expect[1] || y != expect[2] {
 			t.Errorf("Wrong location for %d. Expected %d,%d got %d,%d", expect[0], expect[1], expect[2], x, y)
 		}
