@@ -18,29 +18,67 @@ func TestNodeMatcher(t *testing.T) {
 }
 
 func TestNewNode(t *testing.T) {
-	n := NewNode("havc (66)")
-	if n.Name != "havc" {
-		t.Errorf("Incorrect Name: %s", n.Name)
+	type Test struct {
+		Description string
+		Name        string
+		Weight      int
+		Children    []string
 	}
 
-	if n.Weight != 66 {
-		t.Errorf("Incorrect Weight: %d", n.Weight)
+	tests := []Test{
+		Test{
+			"havc (66)",
+			"havc",
+			66,
+			[]string{},
+		},
+		Test{
+			"fwft (72) -> abc, defg",
+			"fwft",
+			72,
+			[]string{"abc", "defg"},
+		},
 	}
 
-	if len(n.Children) != 0 {
-		t.Errorf("Incorrect Children: %v", n.Children)
+	for _, test := range tests {
+		n, err := NewNode(test.Description)
+		if err != nil {
+			t.Errorf("Error creating %s: %s", test.Description, err)
+		}
+
+		if n.Name != test.Name {
+			t.Errorf("Incorrect name for \"%s\". Expected %s, got %s", test.Description, test.Name, n.Name)
+		}
+
+		if n.Weight != test.Weight {
+			t.Errorf("Incorrect weight for \"%s\". Expected %d, got %d", test.Description, test.Weight, n.Weight)
+		}
+
+		if !reflect.DeepEqual(n.Children, test.Children) {
+			t.Errorf("Incorrect children for \"%s\". Expected %v, got %v", test.Description, test.Children, n.Children)
+		}
+	}
+}
+
+func TestFindRootNode(t *testing.T) {
+	nodes := []*Node{
+		&Node{"pbga", 66, []string{}},
+		&Node{"xhth", 57, []string{}},
+		&Node{"ebii", 61, []string{}},
+		&Node{"havc", 66, []string{}},
+		&Node{"ktlj", 57, []string{}},
+		&Node{"fwft", 72, []string{"ktlj", "cntj", "xhth"}},
+		&Node{"qoyq", 66, []string{}},
+		&Node{"padx", 45, []string{"pbga", "havc", "qoyq"}},
+		&Node{"tknk", 41, []string{"ugml", "padx", "fwft"}},
+		&Node{"jptl", 61, []string{}},
+		&Node{"ugml", 68, []string{"gyxo", "ebii", "jptl"}},
+		&Node{"gyxo", 61, []string{}},
+		&Node{"cntj", 57, []string{}},
 	}
 
-	n = NewNode("fwft (72) -> abc, defg")
-	if n.Name != "fwft" {
-		t.Errorf("Incorrect Name: %s", n.Name)
-	}
-
-	if n.Weight != 72 {
-		t.Errorf("Incorrect Weight: %d", n.Weight)
-	}
-
-	if !reflect.DeepEqual(n.Children, []string{"abc", "defg"}) {
-		t.Errorf("Incorrect Children: %v", n.Children)
+	root_node := FindRootNode(nodes)
+	if root_node.Name != "tknk" {
+		t.Errorf("Wrong root node. Expected tknk, got %s", root_node.Name)
 	}
 }
