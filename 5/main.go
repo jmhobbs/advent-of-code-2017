@@ -4,10 +4,24 @@ import (
 	"bufio"
 	"io"
 	"log"
+	"os"
 	"strconv"
 )
 
 func main() {
+	file, err := os.Open("input")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	jl := NewJumpList(file)
+	for i := 1; true; i++ {
+		if jl.Step() {
+			log.Println("Part A:", i)
+			break
+		}
+	}
 }
 
 type JumpList struct {
@@ -35,5 +49,9 @@ func NewJumpList(input io.Reader) *JumpList {
 	return &jl
 }
 
-func (jl *JumpList) Step() {
+func (jl *JumpList) Step() bool {
+	tmp := jl.IPointer
+	jl.IPointer += jl.Instructions[jl.IPointer]
+	jl.Instructions[tmp] += 1
+	return jl.IPointer > len(jl.Instructions)-1
 }
