@@ -22,6 +22,15 @@ func main() {
 			break
 		}
 	}
+
+	file.Seek(0, 0)
+	jl = NewJumpList(file)
+	for i := 1; true; i++ {
+		if jl.BStep() {
+			log.Println("Part B:", i)
+			break
+		}
+	}
 }
 
 type JumpList struct {
@@ -57,5 +66,12 @@ func (jl *JumpList) Step() bool {
 }
 
 func (jl *JumpList) BStep() bool {
+	tmp := jl.IPointer
+	jl.IPointer += jl.Instructions[jl.IPointer]
+	if jl.Instructions[tmp] >= 3 {
+		jl.Instructions[tmp] -= 1
+	} else {
+		jl.Instructions[tmp] += 1
+	}
 	return jl.IPointer > len(jl.Instructions)-1
 }
