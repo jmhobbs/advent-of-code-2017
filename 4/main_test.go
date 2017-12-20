@@ -20,3 +20,26 @@ func TestValidPassphrase(t *testing.T) {
 		}
 	}
 }
+
+func TestAnagramValidity(t *testing.T) {
+	/*
+		- abcde fghij is a valid passphrase.
+		- abcde xyz ecdab is not valid - the letters from the third word can be rearranged to form the first word.
+		- a ab abc abd abf abj is a valid passphrase, because all letters need to be used when forming another word.
+		- iiii oiii ooii oooi oooo is valid.
+		- oiii ioii iioi iiio is not valid - any of these words can be rearranged to form any other word.
+	*/
+	expected := map[string]bool{
+		"abcde fghij":              true,
+		"abcde xyz ecdab":          false,
+		"a ab abc abd abf abj":     true,
+		"iiii oiii ooii oooi oooo": true,
+		"oiii ioii iioi iiio":      false,
+	}
+
+	for passphrase, expect := range expected {
+		if anagramValidPassphrase(passphrase) != expect {
+			t.Errorf("Error testing passphrase '%s', expected %v", passphrase, expect)
+		}
+	}
+}

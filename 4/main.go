@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -15,10 +16,15 @@ func main() {
 	defer file.Close()
 
 	valid := 0
+	anagramValid := 0
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		if validPassphrase(scanner.Text()) {
+		passphrase := scanner.Text()
+		if validPassphrase(passphrase) {
 			valid += 1
+			if anagramValidPassphrase(passphrase) {
+				anagramValid += 1
+			}
 		}
 	}
 
@@ -27,6 +33,7 @@ func main() {
 	}
 
 	log.Println("Part A:", valid)
+	log.Println("Part B:", anagramValid)
 }
 
 func validPassphrase(pp string) bool {
@@ -37,6 +44,26 @@ func validPassphrase(pp string) bool {
 			return false
 		}
 		seen[word] = true
+	}
+
+	return true
+}
+
+func anagramValidPassphrase(pp string) bool {
+	seen := map[string]bool{}
+
+	for _, word := range strings.Fields(pp) {
+		// given that the passphrases are all ASCII, I'm ok with this.
+		sortable := []byte(word)
+		sort.Slice(sortable, func(i, j int) bool {
+			return sortable[i] < sortable[j]
+		})
+		sorted := string(sortable)
+
+		if _, ok := seen[sorted]; ok {
+			return false
+		}
+		seen[sorted] = true
 	}
 
 	return true
