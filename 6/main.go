@@ -26,10 +26,11 @@ func main() {
 
 	i := 0
 	seen := map[string]bool{}
+	var s string
 	for {
 		i += 1
 		m = Reallocate(m)
-		s := fmt.Sprintf("%v", m) // I'm lazy.
+		s = fmt.Sprintf("%v", m) // I'm lazy.
 		if _, ok := seen[s]; ok {
 			break
 		}
@@ -37,4 +38,17 @@ func main() {
 	}
 
 	log.Println("Part A:", i)
+
+	ia := i
+
+	for {
+		i += 1
+		m = Reallocate(m)
+		sb := fmt.Sprintf("%v", m) // I'm lazy.
+		if sb == s {
+			break
+		}
+	}
+
+	log.Println("Part B:", i-ia)
 }
