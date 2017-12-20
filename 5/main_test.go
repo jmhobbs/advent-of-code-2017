@@ -1,9 +1,23 @@
 package main
 
 import (
+	"bytes"
 	"reflect"
 	"testing"
 )
+
+func TestNewJumpList(t *testing.T) {
+	jl := NewJumpList(bytes.NewBufferString("0\n3\n0\n1\n3\n-2\n"))
+	expected := []int{0, 3, 0, 1, 3, -2}
+
+	if !reflect.DeepEqual(jl.Instructions, expected) {
+		t.Errorf("Expected %v, got %v", expected, jl.Instructions)
+	}
+
+	if jl.IPointer != 0 {
+		t.Error("IPointer is not 0")
+	}
+}
 
 func TestJumpListStep(t *testing.T) {
 	jl := &JumpList{[]int{0, 3, 0, 1, -3}, 0}
