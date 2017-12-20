@@ -55,3 +55,7 @@ func (jl *JumpList) Step() bool {
 	jl.Instructions[tmp] += 1
 	return jl.IPointer > len(jl.Instructions)-1
 }
+
+func (jl *JumpList) BStep() bool {
+	return jl.IPointer > len(jl.Instructions)-1
+}

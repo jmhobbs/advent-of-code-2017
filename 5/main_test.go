@@ -23,3 +23,17 @@ func TestJumpListStep(t *testing.T) {
 		}
 	}
 }
+
+func TestJumpListBStep(t *testing.T) {
+	jl := &JumpList{[]int{0, 3, 0, 1, -3}, 0}
+
+	for i := 0; i < 10; i++ {
+		jl.BStep()
+	}
+
+	expected := []int{2, 3, 2, 3, -1}
+
+	if !reflect.DeepEqual(jl.Instructions, expected) {
+		t.Fatalf("Expected %v got %v.", expected, jl.Instructions)
+	}
+}
