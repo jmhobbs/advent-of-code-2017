@@ -5,6 +5,24 @@ import (
 	"testing"
 )
 
+func exampleNodes() []*Node {
+	return []*Node{
+		&Node{"pbga", 66, []string{}, []*Node{}},
+		&Node{"xhth", 57, []string{}, []*Node{}},
+		&Node{"ebii", 61, []string{}, []*Node{}},
+		&Node{"havc", 66, []string{}, []*Node{}},
+		&Node{"ktlj", 57, []string{}, []*Node{}},
+		&Node{"fwft", 72, []string{"ktlj", "cntj", "xhth"}, []*Node{}},
+		&Node{"qoyq", 66, []string{}, []*Node{}},
+		&Node{"padx", 45, []string{"pbga", "havc", "qoyq"}, []*Node{}},
+		&Node{"tknk", 41, []string{"ugml", "padx", "fwft"}, []*Node{}},
+		&Node{"jptl", 61, []string{}, []*Node{}},
+		&Node{"ugml", 68, []string{"gyxo", "ebii", "jptl"}, []*Node{}},
+		&Node{"gyxo", 61, []string{}, []*Node{}},
+		&Node{"cntj", 57, []string{}, []*Node{}},
+	}
+}
+
 func TestNodeMatcher(t *testing.T) {
 	matches := matcher.FindAllStringSubmatch("havc (66)", -1)
 	if matches == nil {
@@ -61,24 +79,43 @@ func TestNewNode(t *testing.T) {
 }
 
 func TestFindRootNode(t *testing.T) {
-	nodes := []*Node{
-		&Node{"pbga", 66, []string{}},
-		&Node{"xhth", 57, []string{}},
-		&Node{"ebii", 61, []string{}},
-		&Node{"havc", 66, []string{}},
-		&Node{"ktlj", 57, []string{}},
-		&Node{"fwft", 72, []string{"ktlj", "cntj", "xhth"}},
-		&Node{"qoyq", 66, []string{}},
-		&Node{"padx", 45, []string{"pbga", "havc", "qoyq"}},
-		&Node{"tknk", 41, []string{"ugml", "padx", "fwft"}},
-		&Node{"jptl", 61, []string{}},
-		&Node{"ugml", 68, []string{"gyxo", "ebii", "jptl"}},
-		&Node{"gyxo", 61, []string{}},
-		&Node{"cntj", 57, []string{}},
-	}
-
-	root_node := FindRootNode(nodes)
+	root_node := FindRootNode(exampleNodes())
 	if root_node.Name != "tknk" {
 		t.Errorf("Wrong root node. Expected tknk, got %s", root_node.Name)
+	}
+}
+
+func TestBuildTree(t *testing.T) {
+	root_node := BuildTree(exampleNodes())
+	if root_node.Name != "tknk" {
+		t.Errorf("Wrong root node. Expected tknk, got %s", root_node.Name)
+	}
+
+	if len(root_node.ChildNodes) != 3 {
+		t.Errorf("Child nodes not populated. %v", root_node.ChildNodes)
+	}
+}
+
+func TestTotalWeight(t *testing.T) {
+	nodes := exampleNodes()
+	BuildTree(nodes)
+
+	// This is an awkward way to get a node...
+	for _, node := range nodes {
+		if node.Name == "jptl" {
+			weight := node.TotalWeight()
+			if weight != 61 {
+				t.Errorf("Incorrect total weight for jptl. Expected 61 got %d", weight)
+			}
+		}
+	}
+
+	for _, node := range nodes {
+		if node.Name == "ugml" {
+			weight := node.TotalWeight()
+			if weight != 251 {
+				t.Errorf("Incorrect total weight for ugml. Expected 251 got %d", weight)
+			}
+		}
 	}
 }

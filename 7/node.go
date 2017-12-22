@@ -8,9 +8,10 @@ import (
 )
 
 type Node struct {
-	Name     string
-	Weight   int
-	Children []string
+	Name       string
+	Weight     int
+	Children   []string
+	ChildNodes []*Node
 }
 
 var matcher *regexp.Regexp
@@ -41,6 +42,8 @@ func NewNode(description string) (*Node, error) {
 		n.Children = []string{}
 	}
 
+	n.ChildNodes = []*Node{}
+
 	return &n, nil
 }
 
@@ -67,4 +70,41 @@ func FindRootNode(nodes []*Node) *Node {
 		}
 	}
 	return nil
+}
+
+func BuildTree(nodes []*Node) *Node {
+	for _, node := range nodes {
+		if len(node.Children) == 0 {
+			continue
+		}
+		for _, cnode := range nodes {
+			if containsString(node.Children, cnode.Name) {
+				node.ChildNodes = append(node.ChildNodes, cnode)
+			}
+		}
+	}
+
+	return FindRootNode(nodes)
+}
+
+func containsString(slice []string, search string) bool {
+	for _, i := range slice {
+		if i == search {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *Node) TotalWeight() int {
+	if len(n.Children) == 0 {
+		return n.Weight
+	}
+
+	w := n.Weight
+	for _, child := range n.ChildNodes {
+		w += child.TotalWeight()
+	}
+
+	return w
 }
