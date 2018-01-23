@@ -18,6 +18,8 @@ func main() {
 
 	regs := make(Registers)
 
+	max := 0
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		ins, err := ParseInstruction(scanner.Text())
@@ -25,19 +27,18 @@ func main() {
 			log.Fatal(err)
 		}
 		regs.Execute(ins)
+		m := regs.Max()
+		if m > max {
+			max = m
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	max := 0
-	for _, v := range regs {
-		if v > max {
-			max = v
-		}
-	}
-	log.Println("Part A:", max)
+	log.Println("Part A:", regs.Max())
+	log.Println("Part B:", max)
 }
 
 type Registers map[string]int
@@ -130,4 +131,14 @@ func (r Registers) Execute(in Instruction) {
 			r[in.Subject] -= in.Amount
 		}
 	}
+}
+
+func (r Registers) Max() int {
+	max := 0
+	for _, v := range r {
+		if v > max {
+			max = v
+		}
+	}
+	return max
 }
