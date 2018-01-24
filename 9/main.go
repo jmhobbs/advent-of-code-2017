@@ -16,6 +16,7 @@ func main() {
 
 	root := ProcessStream(bytes.NewBuffer(contents))
 	fmt.Println("Part A:", root.TotalScore())
+	fmt.Println("Part B:", root.TotalGarbageCount())
 }
 
 type Group struct {
@@ -49,17 +50,13 @@ func ProcessStream(r io.ByteReader) Group {
 		if garbage_opened {
 			if skip_char {
 				skip_char = false
-				continue
-			}
-
-			if b == '>' {
+			} else if b == '>' {
 				garbage_opened = false
-			}
-
-			if b == '!' {
+			} else if b == '!' {
 				skip_char = true
+			} else {
+				current_group.GarbageCount += 1
 			}
-
 			continue
 		}
 
@@ -98,5 +95,9 @@ func (g Group) TotalScore() int {
 }
 
 func (g Group) TotalGarbageCount() int {
-	return 0
+	total := g.GarbageCount
+	for _, g := range g.Children {
+		total += g.TotalGarbageCount()
+	}
+	return total
 }

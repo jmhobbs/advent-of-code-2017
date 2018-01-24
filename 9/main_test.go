@@ -51,13 +51,13 @@ func TestScore(t *testing.T) {
 
 func TestGarbageCount(t *testing.T) {
 	samples := map[string]int{
-		"<>":              0,
-		"<random,":        17,
-		"<<<<>":           3,
-		"<{!>}>":          2,
-		"<!!>":            0,
-		"<!!!>>":          0,
-		"<{o\"i!a,<{i<a>": 10,
+		"<>": 0,
+		"<random characters>": 17,
+		"<<<<>":               3,
+		"<{!>}>":              2,
+		"<!!>":                0,
+		"<!!!>>":              0,
+		"<{o\"i!a,<{i<a>":     10,
 	}
 
 	for str, expected := range samples {
