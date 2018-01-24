@@ -19,9 +19,10 @@ func main() {
 }
 
 type Group struct {
-	Parent   *Group
-	Children []*Group
-	Score    int
+	Parent       *Group
+	Children     []*Group
+	Score        int
+	GarbageCount int
 }
 
 func ProcessStream(r io.ByteReader) Group {
@@ -31,7 +32,7 @@ func ProcessStream(r io.ByteReader) Group {
 	// > - Closes garbage
 	// ! - Skip next char (in garbage)
 
-	root_group := Group{nil, []*Group{}, 0}
+	root_group := Group{nil, []*Group{}, 0, 0}
 	current_group := &root_group
 	skip_char := false
 	garbage_opened := false
@@ -67,7 +68,7 @@ func ProcessStream(r io.ByteReader) Group {
 		}
 
 		if b == '{' {
-			new_group := Group{current_group, []*Group{}, current_group.Score + 1}
+			new_group := Group{current_group, []*Group{}, current_group.Score + 1, 0}
 			current_group.Children = append(current_group.Children, &new_group)
 			current_group = &new_group
 		}
@@ -94,4 +95,8 @@ func (g Group) TotalScore() int {
 		total += g.TotalScore()
 	}
 	return total
+}
+
+func (g Group) TotalGarbageCount() int {
+	return 0
 }
