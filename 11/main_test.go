@@ -44,3 +44,17 @@ func TestExample(t *testing.T) {
 		t.Errorf("Bad distance, expected 3, got %d", hg.DistanceFromOrigin())
 	}
 }
+
+func TestAbs(t *testing.T) {
+	samples := map[int]int{
+		-1: 1,
+		0:  0,
+		1:  1,
+	}
+
+	for i, expected := range samples {
+		if abs(i) != expected {
+			t.Errorf("abs(%d) != %d -> %d", i, expected, abs(i))
+		}
+	}
+}
