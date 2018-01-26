@@ -13,10 +13,15 @@ func main() {
 	}
 
 	hg := New()
+	max := 0
 	for _, direction := range strings.Split(strings.TrimSpace(string(input)), ",") {
 		hg.Move(direction)
+		if max < hg.DistanceFromOrigin() {
+			max = hg.DistanceFromOrigin()
+		}
 	}
 	log.Println("Part A:", hg.DistanceFromOrigin())
+	log.Println("Part B:", max)
 }
 
 type HexGrid struct {
