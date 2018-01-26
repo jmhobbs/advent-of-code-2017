@@ -7,7 +7,7 @@ import (
 
 func TestExample(t *testing.T) {
 	// The list begins as [0] 1 2 3 4 (where square brackets indicate the current position).
-	kh := New(5)
+	kh := New(5, []int{})
 	// The first length, 3, selects ([0] 1 2) 3 4 (where parentheses indicate the sublist to be reversed).
 	kh.Knot(3)
 	// After reversing that section (0 1 2 into 2 1 0), we get ([2] 1 0) 3 4.
@@ -61,5 +61,26 @@ func TestExample(t *testing.T) {
 	}
 	if kh.SkipSize != 4 {
 		t.Errorf("Skip size is incorrect: %d, expected 4", kh.SkipSize)
+	}
+}
+
+func TestHash(t *testing.T) {
+	samples := map[string][]int{
+		// The empty string becomes a2582a3a0e66e6e86e3812dcb672a272.
+		"a2582a3a0e66e6e86e3812dcb672a272": []int{17, 31, 73, 47, 23},
+		// AoC 2017 becomes 33efeb34ea91902bb2f59c9920caa6cd.
+		"33efeb34ea91902bb2f59c9920caa6cd": []int{int('A'), int('o'), int('C'), int(' '), int('2'), int('0'), int('1'), int('7'), 17, 31, 73, 47, 23},
+		// 1,2,3 becomes 3efbe78a8d82f29979031a4aa0b16a9d.
+		"3efbe78a8d82f29979031a4aa0b16a9d": []int{int('1'), int(','), int('2'), int(','), int('3'), 17, 31, 73, 47, 23},
+		// 1,2,4 becomes 63960835bcdc130f0b66d7ff4f6a5a8e.
+		"63960835bcdc130f0b66d7ff4f6a5a8e": []int{int('1'), int(','), int('2'), int(','), int('4'), 17, 31, 73, 47, 23},
+	}
+
+	for expected, lengths := range samples {
+		kh := New(256, lengths)
+		hash := kh.Hash()
+		if hash != expected {
+			t.Errorf("Bad hash for %v.\nExpected: '%s'\n     Got: '%s'", lengths, expected, hash)
+		}
 	}
 }
